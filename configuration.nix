@@ -105,16 +105,13 @@ nix.settings.experimental-features = [ "nix-command" "flakes" ];
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-	nano # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-	wget
+# terminal
 	kitty
 	kitty-themes
 	neofetch
-	hyprland
-	polybar
-	emacs
-	zsh
 	ranger
+# text editor
+	emacs
 		];
 
   # Some programs need SUID wrappers, can be configured further or are
