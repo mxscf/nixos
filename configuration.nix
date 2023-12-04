@@ -112,6 +112,9 @@ nix.settings.experimental-features = [ "nix-command" "flakes" ];
 	ranger
 # text editor
 	emacs
+# file management
+	7z
+	unzip
 		];
 
   # Some programs need SUID wrappers, can be configured further or are
