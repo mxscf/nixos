@@ -2,19 +2,28 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
 { config, pkgs, ... }:
+
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      #./flake.nix
+      ./maintanence.nix
+      ./virtualization.nix
+      ./windows.nix
+      #./toolkit.nix
+      #./network.nix
+      ./media.nix
+      ./mediatools.nix
     ];
 
+  # flakes
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # Bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -52,16 +61,15 @@ nix.settings.experimental-features = [ "nix-command" "flakes" ];
   services.xserver.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
-  services.xserver = {
+  services.xserver.xkb = {
     layout = "us";
-    xkbVariant = "";
+
   };
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -81,23 +89,17 @@ nix.settings.experimental-features = [ "nix-command" "flakes" ];
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.mem = {
+  users.users.lily = {
     isNormalUser = true;
-    description = "mem";
+    description = "Lily";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      firefox
     #  thunderbird
     ];
   };
 
-  # Enable automatic login for the user.
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "mem";
-
-  # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
+  # Install firefox.
+  programs.firefox.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -105,18 +107,40 @@ nix.settings.experimental-features = [ "nix-command" "flakes" ];
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-# terminal
-	kitty
-	kitty-themes
-	neofetch
-	ranger
-# text editor
-	emacs
-# file management
-	7z
-	unzip
-		];
-
+  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+#language
+  python3
+#code and app building
+  cmake
+  curl
+  git
+  gnumake
+  wget
+	vscode
+  #interfacing
+  firefox
+  chromium
+  dolphin
+#terminal
+  alacritty
+  fastfetch
+  fish
+  btop
+  ranger
+#networking
+  pkgs.openvpn3
+#hardware
+  kdiskmark
+#themes
+  pkgs.catppuccin-gtk
+#tools
+  qbittorrent
+  libreoffice
+  obs-studio
+  figlet
+  cava
+#fonts
+];
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -142,7 +166,6 @@ nix.settings.experimental-features = [ "nix-command" "flakes" ];
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "23.11"; # Did you read the comment?
+  system.stateVersion = "24.05"; # Did you read the comment?
 
 }
-
